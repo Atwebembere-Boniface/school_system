@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Staff Teaching Directory</h2>
+
+<form method="get" style="margin-bottom: 20px; display: flex; gap: 10px;">
+    <input type="text" name="q" placeholder="Search by teacher name..." value="{{ request.GET.q }}" 
+           style="padding: 8px; width: 300px; border: 1px solid #ccc; border-radius: 4px;">
+    <button type="submit" style="padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+        Search
+    </button>
+    {% if request.GET.q %}
+        <a href="?" style="padding: 8px; text-decoration: none; color: #666;">Clear</a>
+    {% endif %}
+</form>
+
+<table border="1" style="width:100%; border-collapse: collapse; text-align: left;">
+    <tr style="background:#f2f2f2;">
+        <th style="padding: 10px;">Teacher Name</th>
+        <th style="padding: 10px;">Subject Assigned</th>
+        <th style="padding: 10px;">Assigned Classes</th> 
+        <th style="padding: 10px;">Session</th> 
+        <th style="padding: 10px;">Actions</th>
+    </tr>
+    {% for load in assignments %}
+    <tr style="border-bottom: 1px solid #ddd;">
+        <td style="padding: 10px;">{{ load.teacher.get_full_name }}</td>
+        <td style="padding: 10px;">{{ load.subject.name }}</td>
+        <td style="padding: 10px;">
+            {% for cl in load.class_levels.all %}
+                <span style="display: inline-block; background: #e7f3ff; color: #007bff; padding: 2px 10px; border-radius: 15px; font-size: 0.85em; margin: 2px; border: 1px solid #b8daff;">
+                    {{ cl.name }}
+                </span>
+            {% empty %}
+                <span style="color: #999; font-style: italic;">No classes assigned</span>
+            {% endfor %}
+        </td>
+        <td style="padding: 10px; color: #666;">{{ load.academic_session }}</td>
+        <td style="padding: 10px;">
+            <div style="display: flex; gap: 10px;">
+                <a href="{% url 'academics:assignment_update' load.pk %}" style="color: #007bff; text-decoration: none; font-weight: bold;">
+                    Modify
+                </a>
+                <span style="color: #ccc;">|</span>
+                <a href="{% url 'academics:assignment_delete' load.pk %}" style="color: #dc3545; text-decoration: none; font-weight: bold;">
+                    Delete
+                </a>
+            </div>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5" style="padding: 20px; text-align: center; color: #999;">No teaching loads found matching your search.</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

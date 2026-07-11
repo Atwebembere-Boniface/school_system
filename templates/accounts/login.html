@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Nyabuhikye SS{% endblock %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 40px auto; padding: 30px; border: 1px solid #ddd; border-radius: 10px; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h2 style="text-align: center; color: #333; margin-bottom: 25px;">School Portal Login</h2>
+
+    {# Show error messages if login fails #}
+    {% if form.errors %}
+        <div style="padding: 10px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 5px; margin-bottom: 20px; font-size: 0.9em;">
+            Your username and password didn't match. Please try again.
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 15px;">
+            {{ form.as_p }}
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;">
+            Login to Portal
+        </button>
+    </form>
+    
+    <div style="margin-top: 20px; text-align: center; font-size: 0.85em; color: #666;">
+        <p>Forgot your password? Please contact the School Administrator.</p>
+    </div>
+</div>
+{% endblock %}

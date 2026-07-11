@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Register New Student to Nyabuhikye SS</h2>
+    <p>This will create both a login account and a student profile record.</p>
+    
+    <div style="background: #fff; padding: 30px; border: 1px solid #ddd; border-radius: 8px; max-width: 600px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        
+        {% if form.errors %}
+        <div style="background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+            <strong style="display: block; margin-bottom: 5px;">Please correct the following:</strong>
+            <ul style="margin: 0; padding-left: 20px;">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px;">Account Information</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <p>
+                    <label style="font-weight: bold;">First name:</label><br>
+                    {{ form.first_name }}
+                </p>
+                <p>
+                    <label style="font-weight: bold;">Last name:</label><br>
+                    {{ form.last_name }}
+                </p>
+            </div>
+            
+            <p>
+                <label style="font-weight: bold;">Username:</label><br>
+                {{ form.username }}
+            </p>
+            
+            <p>
+                <label style="font-weight: bold;">Password:</label><br>
+                {{ form.password }}
+            </p>
+
+            <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 20px;">School Details</h3>
+            
+            <p>
+                <label style="font-weight: bold;">Registration number:</label><br>
+                {{ form.registration_number }}
+            </p>
+            
+            <p>
+                <label style="font-weight: bold;">Current class:</label><br>
+                <div class="class-dropdown">
+                    {{ form.current_class }}
+                </div>
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <p>
+                    <label style="font-weight: bold;">Student type:</label><br>
+                    {{ form.student_type }}
+                </p>
+
+                <p>
+                    <label style="font-weight: bold;">Gender:</label><br>
+                    {{ form.gender }}
+                </p>
+            </div>
+
+            <button type="submit" style="width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 20px; font-weight: bold;">
+                Complete Registration
+            </button>
+        </form>
+    </div>
+
+    <style>
+        /* Force Django's default widgets to look like boxes */
+        input[type="text"], 
+        input[type="password"], 
+        input[type="email"],
+        select, 
+        .class-dropdown select {
+            width: 100% !important;
+            display: block;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: white;
+            min-height: 40px;
+        }
+
+        /* Hover effect for the button */
+        button[type="submit"]:hover {
+            background-color: #218838 !important;
+        }
+
+        p { margin-bottom: 15px; }
+        label { color: #333; }
+    </style>
+{% endblock %}

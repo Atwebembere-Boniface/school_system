@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Teacher Dashboard - {{ school_cfg.school_name }}{% endblock %}
+
+{% block content %}
+    <h2>Teacher Dashboard</h2>
+    <p>Welcome, Teacher <strong>{{ user.get_full_name }}</strong>!</p>
+
+    <div style="margin-top: 30px;">
+        <h3>My Teaching Load ({{ current_session.name }} - {{ current_term.get_name_display }})</h3>
+        
+        <table border="1" style="width: 100%; border-collapse: collapse; background: white; margin-top: 10px;">
+            <thead style="background: #e9ecef;">
+                <tr>
+                    <th style="padding: 12px; text-align: left;">Class</th>
+                    <th style="padding: 12px; text-align: left;">Subject</th>
+                    <th style="padding: 12px; text-align: left;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assignment in my_assignments %}
+                <tr>
+                    <td style="padding: 12px;">{{ assignment.class_level.name }}</td>
+                    <td style="padding: 12px;">{{ assignment.subject.name }} ({{ assignment.subject.code }})</td>
+                    <td style="padding: 12px;">
+                        <a href="#" style="color: #28a745; text-decoration: none; font-weight: bold;">Enter Marks</a> |
+                        <a href="{% url 'class_detail' assignment.class_level.id %}" style="color: #007bff; text-decoration: none;">View Students</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" style="padding: 20px; text-align: center; color: #666;">
+                        You have not been assigned any subjects for this term yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Financial Overview: {{ selected_class.name }}</h2>
+    <a href="{% url 'finance:bursar_class_list' %}" style="text-decoration: none; color: #666;">&larr; Back to Classes</a>
+</div>
+
+<div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background: #f8f9fa; text-align: left; border-bottom: 2px solid #eee;">
+                <th style="padding: 12px;">Student Name</th>
+                <th style="padding: 12px;">Reg No.</th>
+                <th style="padding: 12px;">Total Paid</th>
+                <th style="padding: 12px;">Balance</th>
+                <th style="padding: 12px;">Status</th>
+                <th style="padding: 12px;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in student_finance_list %}
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 12px;">{{ item.profile.user.get_full_name }}</td>
+                <td style="padding: 12px;">{{ item.profile.registration_number }}</td>
+                <td style="padding: 12px; color: #28a745;">UGX {{ item.summary.total_paid|floatformat:0 }}</td>
+                <td style="padding: 12px; color: {% if item.summary.balance > 0 %}#dc3545{% else %}#28a745{% endif %}; font-weight: bold;">
+                    UGX {{ item.summary.balance|floatformat:0 }}
+                </td>
+                <td style="padding: 12px;">
+                    {% if item.summary.balance <= 0 %}
+                        <span style="background: #d4edda; color: #155724; padding: 4px 8px; border-radius: 12px; font-size: 0.8em;">FULLY PAID</span>
+                    {% else %}
+                        <span style="background: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 12px; font-size: 0.8em;">OWING</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 12px;">
+                    <a href="{% url 'finance:student_finance_detail' item.profile.pk %}" style="color: #007bff; text-decoration: none; font-size: 0.9em;">View Ledger</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="padding: 20px; text-align: center; color: #999;">No students registered in this class.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

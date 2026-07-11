@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h2 style="margin-top: 0;">Upload Learning Material</h2>
+    <hr>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Title:</label>
+            {{ form.title }}
+            {% if form.title.errors %}<div style="color: red; font-size: 0.8em;">{{ form.title.errors }}</div>{% endif %}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Material Type:</label>
+            {{ form.material_type }}
+            {% if form.material_type.errors %}<div style="color: red; font-size: 0.8em;">{{ form.material_type.errors }}</div>{% endif %}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Select Subject:</label>
+            {{ form.assignment }}
+            <p style="font-size: 0.85em; color: #666; margin-top: 5px;">
+                Choose the subject this file belongs to.
+            </p>
+            {% if form.assignment.errors %}<div style="color: red; font-size: 0.8em;">{{ form.assignment.errors }}</div>{% endif %}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Target Classes:</label>
+            <div class="checkbox-container">
+                {{ form.target_classes }}
+            </div>
+            <p style="font-size: 0.85em; color: #666; margin-top: 5px;">
+                Select all classes that should have access to this material.
+            </p>
+            {% if form.target_classes.errors %}<div style="color: red; font-size: 0.8em;">{{ form.target_classes.errors }}</div>{% endif %}
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Select File:</label>
+            {{ form.file }}
+            {% if form.file.errors %}<div style="color: red; font-size: 0.8em;">{{ form.file.errors }}</div>{% endif %}
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button type="submit" style="background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 1em; font-weight: bold;">
+                Save Material
+            </button>
+            <a href="{% url 'academics:teacher_dashboard' %}" style="color: #666; text-decoration: none;">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Styling for standard fields */
+    input[type="text"], select, input[type="file"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    /* Styling for the target_classes Checkbox List */
+    .checkbox-container ul {
+        list-style: none;
+        padding: 10px;
+        margin: 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #fcfcfc;
+        max-height: 180px; /* Scroll if teacher has many classes */
+        overflow-y: auto;
+    }
+
+    .checkbox-container li {
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.95em;
+    }
+
+    /* Important: Overrides default width for checkboxes */
+    .checkbox-container input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    .checkbox-container label {
+        cursor: pointer;
+        font-weight: normal !important; /* Prevents labels inside the list from being bold */
+    }
+
+    p { margin: 0; }
+</style>
+{% endblock %}

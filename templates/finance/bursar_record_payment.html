@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Record Student Payment - Nyabuhikye SS{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h2 style="margin-top: 0; color: #d32f2f; border-bottom: 2px solid #f4f7f6; padding-bottom: 10px;">
+        💰 Record New Payment
+    </h2>
+    <p style="color: #666; margin-bottom: 25px;">Search for a student below to record a tuition or fee payment.</p>
+
+    <form method="post" style="display: flex; flex-direction: column; gap: 20px;">
+        {% csrf_token %}
+
+        {% for field in form %}
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <label style="font-weight: bold; color: #333;">{{ field.label }}</label>
+                
+                {# Adding styling directly to form fields #}
+                <div class="form-field-wrapper">
+                    {{ field }}
+                </div>
+
+                {% if field.help_text %}
+                    <small style="color: #888;">{{ field.help_text }}</small>
+                {% endif %}
+
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <span style="color: #d32f2f; font-size: 0.85rem;">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <div style="margin-top: 10px; display: flex; gap: 10px;">
+            <button type="submit" style="background: #2e7d32; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; flex: 2;">
+                Confirm & Record Payment
+            </button>
+            <a href="{% url 'finance:bursar_class_list' %}" style="background: #f4f7f6; color: #333; padding: 12px 24px; border-radius: 5px; text-decoration: none; text-align: center; flex: 1; border: 1px solid #ddd;">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Basic styling for the form inputs to make them look uniform */
+    select, input[type="text"], input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+        box-sizing: border-box; /* Ensures padding doesn't affect width */
+    }
+    
+    select:focus, input:focus {
+        outline: none;
+        border-color: #2e7d32;
+        box-shadow: 0 0 5px rgba(46, 125, 50, 0.2);
+    }
+</style>
+{% endblock %}

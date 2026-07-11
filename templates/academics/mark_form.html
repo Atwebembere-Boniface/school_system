@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h2 style="color: #333; margin-top: 0;">✏️ Edit Mark: {{ object.student.user.get_full_name }}</h2>
+    <p style="color: #666;">Subject: <strong>{{ object.assignment.subject.name }}</strong></p>
+    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: bold;">Term:</label>
+            {{ form.term }}
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: bold;">Score (%):</label>
+            {{ form.score }}
+            <div style="margin-top: 10px;">
+                <span style="color: #666;">Calculated Grade: </span>
+                <span id="edit-live-grade" style="background: #6f42c1; color: white; padding: 2px 8px; border-radius: 4px; font-weight: bold;">{{ object.grade }}</span>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <button type="submit" style="background: #28a745; color: white; padding: 10px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                Update Record
+            </button>
+            <a href="{% url 'academics:view_all_marks' object.assignment.id %}" style="margin-left: 15px; color: #666; text-decoration: none;">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    const scoreInput = document.querySelector('input[type="number"]');
+    const gradeSpan = document.getElementById('edit-live-grade');
+
+    scoreInput.addEventListener('input', function() {
+        const score = parseInt(this.value);
+        let grade = "-";
+        
+        if (score >= 80) grade = "D1";
+        else if (score >= 75) grade = "D2";
+        else if (score >= 70) grade = "C3";
+        else if (score >= 65) grade = "C4";
+        else if (score >= 60) grade = "C5";
+        else if (score >= 55) grade = "C6";
+        else if (score >= 50) grade = "P7";
+        else if (score >= 45) grade = "P8";
+        else if (score >= 0) grade = "F9";
+
+        gradeSpan.textContent = grade;
+    });
+</script>
+
+<style>
+    input[type="number"], select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+</style>
+{% endblock %}

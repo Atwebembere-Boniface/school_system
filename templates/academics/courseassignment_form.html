@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <h2 style="margin-top: 0; color: #333;">Assign Teacher to Subjects</h2>
+    <p style="color: #666; font-size: 0.9em; margin-bottom: 20px;">Use this form to link a teacher to a subject and multiple classes.</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Teacher:</label>
+            {{ form.teacher }}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Subject:</label>
+            {{ form.subject }}
+        </div>
+
+        <div style="margin-bottom: 15px; background: #f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #eee;">
+            <label style="display: block; font-weight: bold; margin-bottom: 10px;">Assigned Classes:</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                {{ form.class_levels }}
+            </div>
+            <small style="display: block; color: #888; margin-top: 10px;">{{ form.class_levels.help_text }}</small>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Academic Session:</label>
+            {{ form.academic_session }}
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; flex: 1;">
+                ✅ Save Assignment
+            </button>
+            <a href="{% url 'academics:assignment_list' %}" style="background: #f8f9fa; color: #333; text-decoration: none; padding: 10px 20px; border-radius: 5px; border: 1px solid #ddd; text-align: center;">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Styling for the checkboxes to look cleaner than the default */
+    ul { list-style-type: none; padding: 0; margin: 0; }
+    li { margin-bottom: 5px; }
+    select, input[type="text"] { width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
+</style>
+{% endblock %}

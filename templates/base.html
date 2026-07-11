@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ school_cfg.school_name|default:"Nyabuhikye SS" }}{% endblock %}</title>
+</head>
+<body style="font-family: sans-serif; line-height: 1.6; margin: 0; padding: 20px; background-color: #f4f7f6;">
+    <header>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            {% if school_cfg.logo %}
+                <img src="{{ school_cfg.logo.url }}" alt="Logo" style="height: 80px;">
+            {% endif %}
+            <div>
+                <h1 style="margin: 0;">{{ school_cfg.school_name|default:"Nyabuhikye SS" }}</h1>
+                <p style="margin: 0;"><i>"{{ school_cfg.school_motto }}"</i></p>
+            </div>
+        </div>
+
+        <nav style="margin-top: 15px; background: #fff; padding: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <strong>Status: {{ current_session|default:"No Session" }} - {{ current_term|default:"No Term" }}</strong> |
+            
+            {% if user.is_authenticated %}
+                {# Smart Dashboard Link #}
+                {% if user.role == 'BURSAR' %}
+                    <a href="{% url 'finance:bursar_class_list' %}">Dashboard</a> | 
+                {% elif user.role == 'TEACHER' %}
+                    <a href="{% url 'academics:teacher_dashboard' %}">Dashboard</a> |
+                {% elif user.role == 'ADMIN' %}
+                    <a href="{% url 'academics:admin_dashboard' %}">Dashboard</a> |
+                {% else %}
+                    <a href="{% url 'academics:student_dashboard' %}">Dashboard</a> | 
+                {% endif %}
+                
+                {# Admin Specific Links #}
+                {% if user.role == 'ADMIN' %}
+                    <a href="{% url 'account:register' %}">Register User</a> |
+                    <a href="{% url 'session_list' %}">School Settings</a> |
+                    <a href="{% url 'academics:all_students_list' %}">Student Directory</a> |
+                {% endif %}
+
+                {# Bursar & Admin Finance Links #}
+                {% if user.role == 'BURSAR' or user.role == 'ADMIN' %}
+                    <a href="{% url 'finance:bursar_class_list' %}" style="color: #d32f2f; font-weight: bold;">💰 Finance Hub</a> |
+                    {# NEW LINK: Points to the view we just created #}
+                    <a href="{% url 'finance:record_payment' %}">Record Student Payment</a> | 
+                    <a href="{% url 'finance:add_fee_structure' %}">Set Fee Structures</a> |
+                {% endif %}
+
+                {# Teacher Specific Links #}
+                {% if user.role == 'TEACHER' %}
+                    <a href="{% url 'academics:upload_material' %}">Upload Notes</a> |
+                    <a href="{% url 'academics:teacher_dashboard' %}">Record Marks</a> |
+                {% endif %}
+
+                {# Student Specific Links #}
+                {% if user.role == 'STUDENT' %}
+                    <a href="{% url 'academics:student_marks' %}">My Academic Results</a> |
+                    <a href="{% url 'academics:student_dashboard' %}" style="color: #2e7d32; font-weight: bold;">💳 My Fees & Payments</a> |
+                {% endif %}
+
+                <form action="{% url 'account:logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background:none; border:none; color:blue; cursor:pointer; text-decoration:underline; padding:0;">Logout ({{ user.username }})</button>
+                </form>
+            {% else %}
+                <a href="{% url 'account:login' %}">Login</a>
+            {% endif %}
+        </nav>
+    </header>
+    <hr>
+
+    <main style="min-height: 400px;">
+        {% if messages %}
+            {% for message in messages %}
+                <div style="padding: 10px; background-color: #e1f5fe; border: 1px solid #01579b; border-radius: 4px; margin-bottom: 10px;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <hr>
+    <footer style="text-align: center; color: #666;">
+        <p>&copy; {% now "Y" %} {{ school_cfg.school_name|default:"Nyabuhikye Secondary School" }}</p>
+        <small>Logged in as: <strong>{{ user.get_full_name|default:user.username }}</strong> ({{ user.get_role_display }})</small>
+    </footer>
+</body>
+</html>

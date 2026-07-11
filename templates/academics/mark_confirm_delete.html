@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Confirm Deletion</h2>
+<p>Are you sure you want to delete the <strong>{{ object.grade }}</strong> mark for <strong>{{ object.student.user.get_full_name }}</strong>?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" style="background: red; color: white; padding: 10px 20px; border: none; border-radius: 5px;">Yes, Delete</button>
+    <a href="{% url 'academics:view_all_marks' object.assignment.id %}" style="margin-left: 10px;">Cancel</a>
+</form>
+{% endblock %}

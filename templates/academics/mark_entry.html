@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 20px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h2 style="color: #6f42c1; margin-bottom: 10px;">📝 Enter Student Mark</h2>
+    <p style="color: #666;">Recording results for your assigned class.</p>
+    <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
+
+    <form method="post" style="display: flex; flex-direction: column; gap: 20px;">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">Select Student:</label>
+            {{ form.student }}
+            <p style="font-size: 0.85em; color: #888;">Only students in this specific class are listed.</p>
+        </div>
+
+        <div class="form-group">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">Mark Score (%):</label>
+            {{ form.score }}
+            <p style="font-size: 0.85em; color: #888;">Grade and Description will be calculated automatically.</p>
+        </div>
+
+        <div class="form-group">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">Academic Term:</label>
+            {{ form.term }}
+        </div>
+
+        <div style="margin-top: 10px; display: flex; gap: 10px;">
+            <button type="submit" style="background: #6f42c1; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                Save Result
+            </button>
+            <a href="{% url 'academics:teacher_dashboard' %}" style="text-decoration: none; background: #6c757d; color: white; padding: 12px 25px; border-radius: 6px; font-weight: bold;">
+                Cancel
+            </a>
+        </div>
+    </form>
+
+    <div style="margin-top: 30px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
+        <h4 style="margin-top: 0;">Grading Reference</h4>
+        <ul style="font-size: 0.9em; column-count: 2; list-style-type: none; padding: 0;">
+            <li>80 - 100: <strong>D1</strong></li>
+            <li>75 - 79: <strong>D2</strong></li>
+            <li>70 - 74: <strong>C3</strong></li>
+            <li>65 - 69: <strong>C4</strong></li>
+            <li>60 - 64: <strong>C5</strong></li>
+            <li>55 - 59: <strong>C6</strong></li>
+            <li>50 - 54: <strong>P7</strong></li>
+            <li>45 - 49: <strong>P8</strong></li>
+            <li>0 - 44: <strong>F9</strong></li>
+        </ul>
+    </div>
+</div>
+
+<style>
+    /* Basic styling for the auto-generated Django form fields */
+    select, input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1em;
+    }
+</style>
+{% endblock %}

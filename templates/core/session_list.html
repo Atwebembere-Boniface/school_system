@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Academic Sessions & Terms</h2>
+    <a href="{% url 'session_add' %}">+ Add New Session</a> | 
+    <a href="{% url 'term_add' %}">+ Add New Term</a>
+
+    <h3>All Sessions</h3>
+    <ul>
+    {% for session in sessions %}
+        <li>
+            <strong>{{ session.name }}</strong> {% if session.is_current %}(Current){% endif %}
+            <ul>
+                {% for term in session.term_set.all %}
+                    <li>Term {{ term.name }} {% if term.is_current %}(Active){% endif %}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}

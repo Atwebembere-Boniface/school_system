@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="margin-bottom: 20px;">
+    <a href="{% url 'academics:teacher_dashboard' %}" style="text-decoration: none; color: #007bff; font-weight: bold;">
+        &larr; Back to My Dashboard
+    </a>
+</div>
+
+<h2>Student Roster: {{ target_class.name }}</h2>
+<p style="color: #666;">Showing students currently enrolled in this class level.</p>
+
+<div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+            <tr>
+                <th style="padding: 12px;">Reg Number</th>
+                <th style="padding: 12px;">Full Name</th>
+                <th style="padding: 12px;">Username</th>
+                <th style="padding: 12px; text-align: center;">Academic Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 12px;">{{ student.registration_number }}</td>
+                <td style="padding: 12px; font-weight: 500;">{{ student.user.get_full_name }}</td>
+                <td style="padding: 12px; color: #666;">{{ student.user.username }}</td>
+                <td style="padding: 12px; text-align: center;">
+                    <span style="background: #d4edda; color: #155724; padding: 4px 10px; border-radius: 20px; font-size: 0.85em; font-weight: bold;">
+                        Enrolled
+                    </span>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="padding: 40px; text-align: center; color: #999;">
+                    <div style="font-size: 1.2em; margin-bottom: 10px;">Empty Class</div>
+                    No students are currently assigned to {{ target_class.name }}.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

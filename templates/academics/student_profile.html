@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Student Profile: {{ student.user.get_full_name }}</h2>
+    <div style="display: flex; gap: 10px;">
+        <a href="{% url 'academics:all_students_list' %}" style="padding: 8px 15px; background: #6c757d; color: white; border-radius: 4px; text-decoration: none;">Back to Directory</a>
+        <a href="{% url 'academics:student_edit' student.pk %}" style="padding: 8px 15px; background: #007bff; color: white; border-radius: 4px; text-decoration: none;">Edit Profile</a>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+    <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd; height: fit-content; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <h3 style="border-bottom: 2px solid #f2f2f2; padding-bottom: 10px;">Personal Details</h3>
+        <p><strong>Reg No:</strong> {{ student.registration_number }}</p>
+        <p><strong>Gender:</strong> {{ student.get_gender_display }}</p>
+        <p><strong>Type:</strong> {{ student.get_student_type_display }}</p>
+        <p><strong>Class:</strong> {{ student.current_class.name }}</p>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+        <p><strong>Username:</strong> {{ student.user.username }}</p>
+        
+        <div style="margin-top: 20px; text-align: center; background: #f8f9fa; padding: 15px; border-radius: 5px; border: 1px solid #e9ecef;">
+            <span style="display: block; font-size: 0.8em; color: #666; text-transform: uppercase; letter-spacing: 1px;">Overall Average</span>
+            <span style="font-size: 2.2em; font-weight: bold; color: {% if average_score >= 50 %}#28a745{% else %}#dc3545{% endif %};">
+                {{ average_score|default:"0"|floatformat:1 }}%
+            </span>
+        </div>
+    </div>
+
+    <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <h3 style="border-bottom: 2px solid #f2f2f2; padding-bottom: 10px;">Academic Performance</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <thead>
+                <tr style="background: #f8f9fa; text-align: left;">
+                    <th style="padding: 12px; border-bottom: 2px solid #ddd;">Subject</th>
+                    <th style="padding: 12px; border-bottom: 2px solid #ddd;">Term</th>
+                    <th style="padding: 12px; border-bottom: 2px solid #ddd;">Grade</th>
+                    <th style="padding: 12px; border-bottom: 2px solid #ddd;">Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for res in results %}
+                <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">
+                        {{ res.assignment.subject.name }}
+                    </td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">
+                        {{ res.term }}
+                    </td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">
+                        <strong>{{ res.grade }}</strong> <br>
+                        <small style="color: #666;">{{ res.description }}</small>
+                    </td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: bold;">
+                        <span style="color: {% if res.score >= 50 %}#212529{% else %}#dc3545{% endif %};">
+                            {{ res.score }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="padding: 40px; text-align: center; color: #999;">
+                        <div style="font-size: 1.2em; margin-bottom: 5px;">No marks recorded</div>
+                        <p style="margin: 0; font-size: 0.9em;">This student does not have any results recorded yet.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<footer style="margin-top: 30px; font-size: 0.85em; color: #aaa; text-align: center;">
+    Nyabuhikye SS - Student Profile Generated on {% now "F j, Y" %}
+</footer>
+{% endblock %}

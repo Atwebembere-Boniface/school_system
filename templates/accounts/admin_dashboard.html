@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Nyabuhikye SS{% endblock %}
+
+{% block content %}
+    <h1>Nyabuhikye SS - Admin Control Panel</h1>
+    <p>Welcome, {{ user.username }}! (Role: {{ user.get_role_display }})</p>
+    
+    <div style="display: flex; gap: 40px; flex-wrap: wrap;">
+        <section style="flex: 1; min-width: 200px;">
+            <h3>User Management</h3>
+            <ul>
+                <li><a href="{% url 'account:register' %}">Register New Staff</a></li>
+                <li><a href="/admin/accounts/user/">View All System Users</a></li>
+            </ul>
+        </section>
+
+        <section style="flex: 1; min-width: 200px;">
+            <h3>School Management</h3>
+            <ul>
+                <li><a href="{% url 'session_list' %}">Manage Sessions & Terms</a></li>
+                <li><a href="{% url 'session_add' %}">Add New Academic Year</a></li>
+                <li><a href="{% url 'school_settings' %}">Update School Info (Logo/Motto)</a></li>
+            </ul>
+        </section>
+
+        <section style="flex: 1; min-width: 200px;">
+            <h3>Academics Management</h3>
+            <ul>
+                <li><a href="{% url 'academics:class_list' %}">View Classes (S1 - S6)</a></li>
+                <li><a href="{% url 'academics:class_add' %}">Add New Class Level</a></li>
+                <li><a href="{% url 'academics:subject_list' %}">Subject List & Codes</a></li>
+                <li><a href="{% url 'academics:subject_add' %}">Add New Subject</a></li>
+                <li><a href="{% url 'academics:student_register' %}" style="font-weight: bold; color: #28a745;">Register New Student</a></li>
+            </ul>
+        </section>
+
+<section style="flex: 1; min-width: 200px;">
+    <h3>Staff & Teaching</h3>
+    <ul>
+        <li><a href="{% url 'academics:all_staff_load' %}">📋 View All Teacher Loads</a></li>
+        <li><a href="{% url 'academics:all_students_list' %}">👥 View All Students List</a></li>
+        <li><a href="{% url 'academics:assign_course' %}">➕ Assign Teacher to Subject</a></li>
+        <li><a href="{% url 'academics:recycle_bin' %}">🗑️ Student Recycle Bin</a></li>
+    </ul>
+
+    
+</section>
+
+    </div>
+{% endblock %}

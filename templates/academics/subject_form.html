@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{% if object %}Edit{% else %}Add{% endif %} Subject</h2>
+    <div style="max-width: 500px; background: #f9f9f9; padding: 20px; border-radius: 8px;">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Save Subject</button>
+            <a href="{% url 'academics:subject_list' %}" style="margin-left: 10px; color: #666;">Cancel</a>
+        </form>
+    </div>
+{% endblock %}

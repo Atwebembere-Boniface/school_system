@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Manage My Uploaded Materials</h2>
+<a href="{% url 'academics:teacher_dashboard' %}">&larr; Back to Dashboard</a>
+
+<table style="width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border: 1px solid #ddd;">
+    <tr style="background: #f4f4f4;">
+        <th style="padding: 12px; text-align: left;">Title</th>
+        <th style="padding: 12px; text-align: left;">Class/Subject</th>
+        <th style="padding: 12px; text-align: left;">Type</th>
+        <th style="padding: 12px; text-align: center;">Downloads</th> <th style="padding: 12px; text-align: left;">Actions</th>
+    </tr>
+    {% for material in materials %}
+    <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 12px;">{{ material.title }}</td>
+        <td style="padding: 12px;">{{ material.assignment.class_level.name }} - {{ material.assignment.subject.name }}</td>
+        <td style="padding: 12px;">{{ material.get_material_type_display }}</td>
+        <td style="padding: 12px; text-align: center;">
+            <span style="background: #28a745; color: white; padding: 2px 10px; border-radius: 12px; font-weight: bold;">
+                {{ material.downloads }}
+            </span>
+        </td>
+        <td style="padding: 12px;">
+            <a href="{{ material.file.url }}" target="_blank" style="text-decoration: none; margin-right: 10px;">👁️ View</a>
+            <a href="{% url 'academics:delete_material' material.pk %}" style="text-decoration: none;">🗑️ Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

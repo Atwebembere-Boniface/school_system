@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Class - {{ school_cfg.school_name }}{% endblock %}
+
+{% block content %}
+    <h2>Create New Class Level</h2>
+    <p>Use this form to add a new level (e.g., "Senior 1") and assign a Class Teacher.</p>
+
+    <div style="max-width: 500px; background: #f4f4f4; padding: 20px; border-radius: 8px;">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div style="margin-top: 20px;">
+                <button type="submit" style="padding: 10px 20px; background: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Create Class
+                </button>
+                <a href="{% url 'academics:class_list' %}" style="margin-left: 15px; color: #666;">Back to List</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    {# Header Section #}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>Student Portal: {{ user.get_full_name }}</h2>
+        <!-- <div style="display: flex; gap: 10px;">
+            <a href="{% url 'finance:student_dashboard' %}" style="background: #28a745; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; font-weight: bold;">💳 My Fees</a>
+            <a href="{% url 'academics:student_marks' %}" style="background: #6c757d; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; font-weight: bold;">📊 Full Report Card</a>
+        </div> -->
+    </div>
+
+    {# Financial & Status Cards #}
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 25px;">
+        
+        {# Fees Balance Card #}
+        <div style="background: white; border-radius: 8px; padding: 15px; border: 1px solid #ddd; border-left: 5px solid {% if finance.balance > 0 %}#dc3545{% else %}#28a745{% endif %}; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <h5 style="margin: 0; color: #666; font-size: 0.8rem; text-transform: uppercase;">Fees Balance</h5>
+            <h2 style="margin: 5px 0; color: {% if finance.balance > 0 %}#dc3545{% else %}#28a745{% endif %};">
+                UGX {{ finance.balance|floatformat:0|default:"0" }}
+            </h2>
+            {% if finance.balance > 0 %}
+                {# FIXED URL: Switched 'pay_fees' to 'pay' to match your InitiatePaymentView URL name #}
+                <a href="{% url 'finance:pay' %}" style="font-size: 0.8rem; color: #007bff; font-weight: bold; text-decoration: none;">Pay Now &rarr;</a>
+            {% else %}
+                <span style="font-size: 0.8rem; color: #28a745; font-weight: bold;">Fully Paid ✔</span>
+            {% endif %}
+        </div>
+
+        {# Total Paid Card #}
+        <div style="background: white; border-radius: 8px; padding: 15px; border: 1px solid #ddd; border-left: 5px solid #007bff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <h5 style="margin: 0; color: #666; font-size: 0.8rem; text-transform: uppercase;">Total Paid</h5>
+            <h2 style="margin: 5px 0; color: #007bff;">UGX {{ finance.total_paid|floatformat:0|default:"0" }}</h2>
+            <small style="color: #888;">For the current term</small>
+        </div>
+
+        {# Class Info Card #}
+        <div style="background: white; border-radius: 8px; padding: 15px; border: 1px solid #ddd; border-left: 5px solid #6c757d; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <h5 style="margin: 0; color: #666; font-size: 0.8rem; text-transform: uppercase;">Current Class</h5>
+            <h2 style="margin: 5px 0; color: #333;">{{ student.current_class.name|default:"N/A" }}</h2>
+            <small style="color: #888;">Reg: {{ student.registration_number }}</small>
+        </div>
+    </div>
+
+    {# Timetable and Subjects Section #}
+    <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+        
+        {# Timetable Card #}
+        <div class="card-timetable" style="background: white; border-radius: 8px; padding: 20px; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <h3>📅 Class Timetable</h3>
+            <hr>
+            {% if timetable %}
+                <div style="text-align: center;">
+                    <p>Official schedule for <strong>{{ student.current_class.name }}</strong></p>
+                    {% if timetable.file %}
+                        <img src="{{ timetable.file.url }}" style="max-width:100%; border-radius: 4px; margin-bottom: 15px;">
+                        <br>
+                        <a href="{% url 'academics:track_timetable_download' timetable.pk %}" style="color: #28a745; text-decoration: none; font-weight: bold;">📥 Download Timetable</a>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 20px;">
+                    <p class="text-muted">No timetable uploaded yet for {{ student.current_class.name|default:"your class" }}.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        {# Subjects & Resources Card #}
+        <div class="card-subjects" style="background: white; border-radius: 8px; padding: 20px; border: 1px solid #ddd; margin-top: 10px;">
+            <h3>📚 My Subjects & Resources</h3>
+            <hr>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+                {% for subject_data in subjects_with_notes %}
+                <div class="subject-box" style="border: 1px solid #eee; padding: 20px; border-radius: 8px; background: #fff; transition: all 0.2s ease; display: flex; flex-direction: column; min-height: 180px;">
+                    <div style="flex-grow: 1;">
+                        <h4 style="margin: 0 0 5px 0; color: #007bff;">{{ subject_data.assignment.subject.name }}</h4>
+                        <p style="font-size: 0.85rem; color: #6c757d; margin-bottom: 12px;">Teacher: {{ subject_data.assignment.teacher.get_full_name }}</p>
+                        
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <span title="{{ subject_data.note_count }} notes" style="background: #e7f1ff; color: #007bff; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">📄 {{ subject_data.note_count }} Notes</span>
+                            <span title="{{ subject_data.assignment_count }} assignments" style="background: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">📝 {{ subject_data.assignment_count }} Tasks</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #f8f9fa;">
+                        <a href="{% url 'academics:subject_resources' subject_data.assignment.subject.id %}" 
+                           style="font-size: 0.9rem; color: #28a745; text-decoration: none; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
+                            <span>Access All Resources</span>
+                            <span style="font-size: 1.2rem;">→</span>
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: #f9f9f9; border-radius: 8px; border: 1px dashed #ccc;">
+                    <p style="color: #888;">No subjects have been assigned to <strong>{{ student.current_class.name|default:"your class" }}</strong> yet.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .subject-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.1) !important;
+        border-color: #007bff !important;
+    }
+</style>
+{% endblock %}

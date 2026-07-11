@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Term - Nyabuhikye SS{% endblock %}
+
+{% block content %}
+    <h2>Add Academic Term</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <p><small>Note: Checking "Is Current" will automatically deactivate the previous term.</small></p>
+        <button type="submit">Save Term</button>
+    </form>
+    <br>
+    <a href="{% url 'session_list' %}">Back to Sessions</a>
+{% endblock %}

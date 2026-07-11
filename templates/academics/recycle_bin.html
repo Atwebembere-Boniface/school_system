@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Student Recycle Bin</h2>
+<p>Students here are hidden from class lists but remain in the database.</p>
+
+<table border="1" style="width:100%; border-collapse: collapse;">
+    <tr style="background:#f2f2f2;">
+        <th>Name</th>
+        <th>Former Class</th>
+        <th>Actions</th>
+    </tr>
+    {% for student in deleted_students %}
+    <tr>
+        <td>{{ student.user.get_full_name }}</td>
+        <td>{{ student.current_class }}</td>
+        <td>
+            <a href="{% url 'academics:restore_student' student.pk %}" style="color: green; margin-right: 15px;">Restore</a>
+            
+            <a href="{% url 'academics:permanent_delete_student' student.pk %}" style="color: red;">Delete Permanently</a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="3">Recycle bin is empty.</td></tr>
+    {% endfor %}
+</table>
+
+<br>
+<a href="{% url 'academics:all_students_list' %}">&larr; Back to Directory</a>
+{% endblock %}

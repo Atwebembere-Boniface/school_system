@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 50px auto; padding: 30px; border: 1px solid #dee2e6; border-radius: 10px; background-color: #fff; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h2 style="color: #dc3545;">Confirm Deletion</h2>
+    <hr>
+    <p style="font-size: 1.1em; margin: 20px 0;">
+        Are you sure you want to delete the material: <br>
+        <strong>"{{ object.title }}"</strong>?
+    </p>
+    <p style="color: #666; font-size: 0.9em; margin-bottom: 30px;">
+        This action cannot be undone. Students of <strong>{{ object.assignment.class_level.name }}</strong> will no longer be able to access this file.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" style="background-color: #dc3545; color: white; padding: 10px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-right: 10px;">
+            Yes, Delete it
+        </button>
+        <a href="{% url 'academics:teacher_materials' %}" style="display: inline-block; background-color: #6c757d; color: white; padding: 10px 25px; border-radius: 5px; text-decoration: none; font-weight: bold;">
+            Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}

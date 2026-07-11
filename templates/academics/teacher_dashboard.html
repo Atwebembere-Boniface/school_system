@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Teacher Dashboard: {{ user.get_full_name }}</h2>
+
+{% if managed_classes %}
+<div style="background: #e7f3ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #007bff;">
+    <h3>Class Teacher Authority</h3>
+    <p>You are the Class Teacher for:</p>
+    <ul>
+        {% for cls in managed_classes %}
+        <li style="margin-bottom: 15px;">
+            <strong>{{ cls.name }}</strong> - 
+            <a href="{% url 'academics:class_staff_list' cls.id %}">View All Subject Teachers</a>
+            
+            <div style="margin-top: 10px; background: white; padding: 10px; border-radius: 5px; border: 1px dashed #007bff;">
+                <strong>📅 Class Timetable:</strong>
+                {% if cls.timetable %}
+                    <a href="{{ cls.timetable.file.url }}" target="_blank" style="margin-left: 10px; color: #007bff;">View Current</a> | 
+                    <a href="{% url 'academics:timetable_upload' %}" style="color: #28a745;">Update</a> | 
+                    <a href="{% url 'academics:timetable_delete' cls.timetable.pk %}" style="color: #dc3545;" onclick="return confirm('Delete this timetable?')">Delete</a>
+                {% else %}
+                    <span style="color: #666; margin-left: 10px;">No timetable uploaded.</span>
+                    <a href="{% url 'academics:timetable_upload' %}" style="margin-left: 10px; font-weight: bold; color: #28a745;">+ Upload Timetable</a>
+                {% endif %}
+            </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<h3>My Teaching Load</h3>
+<div style="display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
+    {% for load in my_load %}
+    <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <h4 style="margin-bottom: 10px; color: #333; display: flex; align-items: center; gap: 10px;">
+            <span>📘</span> {{ load.subject.name }}
+        </h4>
+        
+        <div style="margin-top: 15px;">
+            <p style="font-weight: bold; font-size: 0.9em; margin-bottom: 10px; color: #555;">🏫 Your Assigned Classes:</p>
+            
+            {% for cl in load.class_levels.all %}
+            <div style="background: #f8f9fa; border: 1px solid #e1e4e8; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <strong style="color: #007bff; font-size: 1.1em;">{{ cl.name|title }}</strong>
+                    <a href="{% url 'academics:assigned_student_list' cl.id %}" 
+                       style="font-size: 0.8em; text-decoration: none; color: #666; background: #fff; border: 1px solid #ccc; padding: 2px 8px; border-radius: 4px;">
+                       👥 View Roster
+                    </a>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <a href="{% url 'academics:bulk_mark_entry' load.id %}?class_id={{ cl.id }}" 
+                       style="color: #6f42c1; font-weight: bold; text-decoration: none; font-size: 0.9em; display: flex; align-items: center; gap: 5px;">
+                       📝 Enter Marks for {{ cl.name }}
+                    </a>
+                    
+                    <a href="{% url 'academics:view_all_marks' load.id %}?class_id={{ cl.id }}" 
+                       style="color: #17a2b8; font-weight: bold; text-decoration: none; font-size: 0.9em; display: flex; align-items: center; gap: 5px;">
+                       📊 View Marks & Grades
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+                <span style="color: #dc3545; font-size: 0.85em;">⚠️ No classes assigned to this subject.</span>
+            {% endfor %}
+            
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+            
+            <a href="{% url 'academics:upload_material' %}" 
+               style="display: block; color: #28a745; text-decoration: none; font-weight: bold; text-align: center; background: #f0fff4; padding: 8px; border-radius: 6px; border: 1px solid #c6f6d5;">
+               📁 Upload Notes for {{ load.subject.name }}
+            </a>
+        </div>
+    </div>
+    {% empty %}
+    <p>No teaching assignments found for this session.</p>
+    {% endfor %}
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+    <h3>Recent Uploaded Materials</h3>
+    <a href="{% url 'academics:teacher_materials' %}" style="color: #007bff; font-weight: bold; text-decoration: none;">Manage All Materials &rarr;</a>
+</div>
+
+<div style="background: white; padding: 15px; border: 1px solid #ddd; border-radius: 8px; margin-top: 10px;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                <th style="padding: 12px; text-align: left;">Title</th>
+                <th style="padding: 12px; text-align: left;">Subject</th>
+                <th style="padding: 12px; text-align: left;">Type</th>
+                <th style="padding: 12px; text-align: center;">Downloads</th>
+                <th style="padding: 12px; text-align: center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for material in recent_uploads %}
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 12px;">{{ material.title }}</td>
+                <td style="padding: 12px;">{{ material.assignment.subject.name }}</td>
+                <td style="padding: 12px;">
+                    <span style="background: #e9ecef; padding: 4px 10px; border-radius: 12px; font-size: 0.85em; font-weight: 500;">
+                        {{ material.get_material_type_display }}
+                    </span>
+                </td>
+                <td style="padding: 12px; text-align: center;">
+                    <span style="background: #28a745; color: white; padding: 2px 8px; border-radius: 100px; font-size: 0.85em; font-weight: bold;">
+                        {{ material.downloads }}
+                    </span>
+                </td>
+                <td style="padding: 12px; text-align: center;">
+                    <a href="{{ material.file.url }}" target="_blank" title="View" style="text-decoration: none; margin-right: 15px; font-size: 1.2em;">👁️</a>
+                    <a href="{% url 'academics:delete_material' material.pk %}" title="Delete" style="text-decoration: none; font-size: 1.2em;">🗑️</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="padding: 30px; text-align: center; color: #999;">You haven't uploaded any materials yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Bulk Mark Entry: {{ assignment.subject.name }}</h2>
+
+<form method="post" id="bulk-mark-form">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border: 1px solid #ddd;">
+        <thead>
+            <tr style="background: #f4f4f4; border-bottom: 2px solid #ddd;">
+                <th style="padding: 10px; text-align: left;">Student Name</th>
+                <th style="padding: 10px; text-align: left;">Term</th>
+                <th style="padding: 10px; text-align: left;">Score (%)</th>
+                <th style="padding: 10px; text-align: center; color: #6f42c1;">Auto-Grade</th> </tr>
+        </thead>
+        <tbody>
+            {% for student, form in student_forms %}
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 10px;">{{ student.user.get_full_name }} {{ form.student }}</td>
+                <td style="padding: 10px;">{{ form.term }}</td>
+                <td style="padding: 10px;">
+                    {{ form.score }} 
+                </td>
+                <td style="padding: 10px; text-align: center;">
+                    <span class="live-grade" style="font-weight: bold; color: #6f42c1;">-</span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div style="margin-top: 20px;">
+        <button type="submit" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">💾 Save All Marks</button>
+        <a href="{% url 'academics:teacher_dashboard' %}" style="margin-left: 10px; color: #666;">Cancel</a>
+    </div>
+</form>
+
+<script>
+document.querySelectorAll('.mark-input').forEach(input => {
+    input.addEventListener('input', function() {
+        const score = parseInt(this.value);
+        const gradeSpan = this.closest('tr').querySelector('.live-grade');
+        
+        let grade = "-";
+        if (score >= 80) grade = "D1";
+        else if (score >= 75) grade = "D2";
+        else if (score >= 70) grade = "C3";
+        else if (score >= 65) grade = "C4";
+        else if (score >= 60) grade = "C5";
+        else if (score >= 55) grade = "C6";
+        else if (score >= 50) grade = "P7";
+        else if (score >= 45) grade = "P8";
+        else if (score >= 0) grade = "F9";
+
+        gradeSpan.textContent = grade;
+    });
+});
+</script>
+{% endblock %}

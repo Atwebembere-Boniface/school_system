@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: white;">
+    <h2>📅 Upload Class Timetable</h2>
+    <p>Upload the weekly schedule for <strong>{{ user.managed_classes.first.name }}</strong>.</p>
+    <hr>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 20px;">
+            <label for="id_file">Select Timetable File (PDF or Image):</label><br><br>
+            {{ form.file }}
+        </div>
+
+        <button type="submit" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+            💾 Save Timetable
+        </button>
+        
+        <a href="{% url 'academics:teacher_dashboard' %}" style="margin-left: 15px; text-decoration: none; color: #666;">Cancel</a>
+    </form>
+</div>
+{% endblock %}
